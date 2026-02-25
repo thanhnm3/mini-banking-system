@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${title} ?: 'Mini Banking System'">Mini Banking System</title>
+  <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link th:href="@{/css/app.css}" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" th:fragment="header">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">Mini Banking</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+          <li class="nav-item"><a class="nav-link" href="/pages/users">Khách hàng</a></li>
+          <li class="nav-item"><a class="nav-link" href="/pages/api-test">API Test</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Giao dịch</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/pages/transactions/transfer">Chuyển tiền</a></li>
+              <li><a class="dropdown-item" href="/pages/transactions/deposit">Nạp tiền</a></li>
+              <li><a class="dropdown-item" href="/pages/transactions/withdraw">Rút tiền</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div th:fragment="alerts">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </div>
+
+  <footer class="footer mt-auto py-3 bg-light border-top" th:fragment="footer">
+    <div class="container text-center text-muted small">
+      Mini Banking System &copy; 2025
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" th:fragment="scripts"></script>
+</body>
+</html>

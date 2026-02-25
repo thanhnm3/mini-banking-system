@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Danh sách khách hàng - Mini Banking')}"></head>
+<body>
+  <div th:replace="~{layout :: header}"></div>
+
+  <main class="container py-4">
+    <div th:replace="~{layout :: alerts}"></div>
+    <h1 class="mb-4">Danh sách khách hàng</h1>
+    <p class="text-muted small">Mở DevTools (F12) → Network → XHR để xem API call khi trang load.</p>
+    <div class="card">
+      <div class="card-body">
+        <div id="loading" class="text-center py-4 text-muted">Đang tải...</div>
+        <table class="table table-hover" id="usersTable" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Họ tên</th>
+              <th>Số điện thoại</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{layout :: footer}"></div>
+  <div th:replace="~{layout :: scripts}"></div>
+
+  <script th:inline="javascript">
+    (function() {
+      const API_BASE = /*[[@{/api/v1}]]*/ '/api/v1';
+      fetch(API_BASE + '/users')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('loading').style.display = 'none';
+          const table = document.getElementById('usersTable');
+          const tbody = document.getElementById('usersBody');
+          if (data.success && data.data) {
+            data.data.forEach(u => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>${u.id}</td>
+                <td>${u.email || ''}</td>
+                <td>${u.fullName || ''}</td>
+                <td>${u.phone || ''}</td>
+                <td>${u.status || ''}</td>
+                <td><a href="/pages/users/${u.id}" class="btn btn-sm btn-outline-primary">Chi tiết</a></td>
+              `;
+              tbody.appendChild(tr);
+            });
+            table.style.display = 'table';
+          }
+        })
+        .catch(err => {
+          document.getElementById('loading').textContent = 'Lỗi: ' + err.message;
+        });
+    })();
+  </script>
+</body>
+</html>

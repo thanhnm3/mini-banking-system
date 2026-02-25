@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='API Test - Mini Banking')}"></head>
+<body>
+  <div th:replace="~{layout :: header}"></div>
+
+  <main class="container py-4">
+    <div th:replace="~{layout :: alerts}"></div>
+    <h1 class="mb-4">API Explorer</h1>
+    <p class="text-muted mb-4">
+      Mở DevTools (F12) → tab Network → XHR/Fetch để xem request và response khi bấm các nút bên dưới.
+    </p>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Users</h5>
+            <p class="card-text small">GET /api/v1/users</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="fetchUsers()">Gọi API</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">User by ID</h5>
+            <p class="card-text small">GET /api/v1/users/1</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="fetchUser(1)">Gọi API</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Accounts by User</h5>
+            <p class="card-text small">GET /api/v1/accounts/user/1</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="fetchAccountsByUser(1)">Gọi API</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Account by Number</h5>
+            <p class="card-text small">GET /api/v1/accounts/number/1001001001</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="fetchAccountByNumber('1001001001')">Gọi API</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Transaction History</h5>
+            <p class="card-text small">GET /api/v1/transactions/account/1</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="fetchTransactions(1)">Gọi API</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Response</span>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearResponse()">Xóa</button>
+      </div>
+      <div class="card-body">
+        <pre id="response" class="mb-0 bg-light p-3 rounded small" style="max-height: 400px; overflow: auto"></pre>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{layout :: footer}"></div>
+  <div th:replace="~{layout :: scripts}"></div>
+
+  <script th:inline="javascript">
+    const API_BASE = /*[[@{/api/v1}]]*/ '/api/v1';
+
+    function updateResponse(data) {
+      document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+    }
+
+    function clearResponse() {
+      document.getElementById('response').textContent = '';
+    }
+
+    async function fetchUsers() {
+      try {
+        const res = await fetch(API_BASE + '/users');
+        const data = await res.json();
+        updateResponse(data);
+      } catch (e) {
+        updateResponse({ error: e.message });
+      }
+    }
+
+    async function fetchUser(id) {
+      try {
+        const res = await fetch(API_BASE + '/users/' + id);
+        const data = await res.json();
+        updateResponse(data);
+      } catch (e) {
+        updateResponse({ error: e.message });
+      }
+    }
+
+    async function fetchAccountsByUser(userId) {
+      try {
+        const res = await fetch(API_BASE + '/accounts/user/' + userId);
+        const data = await res.json();
+        updateResponse(data);
+      } catch (e) {
+        updateResponse({ error: e.message });
+      }
+    }
+
+    async function fetchAccountByNumber(accountNumber) {
+      try {
+        const res = await fetch(API_BASE + '/accounts/number/' + accountNumber);
+        const data = await res.json();
+        updateResponse(data);
+      } catch (e) {
+        updateResponse({ error: e.message });
+      }
+    }
+
+    async function fetchTransactions(accountId) {
+      try {
+        const res = await fetch(API_BASE + '/transactions/account/' + accountId);
+        const data = await res.json();
+        updateResponse(data);
+      } catch (e) {
+        updateResponse({ error: e.message });
+      }
+    }
+  </script>
+</body>
+</html>

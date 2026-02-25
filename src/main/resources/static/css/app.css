@@ -1,0 +1,19 @@
+:root {
+  --primary: #0F766E;
+  --primary-dark: #0D5C55;
+  --navy: #0A1628;
+  --text: #134E4A;
+  --bg: #F0FDFA;
+  --border: #99F6E4;
+}
+body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); }
+.navbar { background-color: var(--navy) !important; }
+.navbar-brand, .nav-link { color: #fff !important; }
+.nav-link:hover { color: var(--border) !important; }
+.btn-primary { background-color: var(--primary); border-color: var(--primary); }
+.btn-primary:hover { background-color: var(--primary-dark); border-color: var(--primary-dark); }
+.card { border: 1px solid var(--border); border-radius: 8px; }
+.card-header { background-color: rgba(15, 118, 110, 0.08); font-weight: 600; }
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-dark); }
+.table th { color: var(--navy); }

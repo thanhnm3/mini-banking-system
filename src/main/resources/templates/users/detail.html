@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Chi tiết khách hàng - Mini Banking')}"></head>
+<body>
+  <div th:replace="~{layout :: header}"></div>
+
+  <main class="container py-4">
+    <div th:replace="~{layout :: alerts}"></div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/pages/users">Khách hàng</a></li>
+        <li class="breadcrumb-item active" id="breadcrumb">Chi tiết</li>
+      </ol>
+    </nav>
+    <h1 class="mb-4">Chi tiết khách hàng</h1>
+    <p class="text-muted small">Mở DevTools (F12) → Network → XHR để xem API calls.</p>
+
+    <div id="loading" class="text-center py-4 text-muted">Đang tải...</div>
+    <div id="content" style="display: none">
+      <div class="card mb-4">
+        <div class="card-header">Thông tin</div>
+        <div class="card-body">
+          <dl class="row" id="userInfo"></dl>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Tài khoản</div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Số tài khoản</th>
+                <th>Loại</th>
+                <th>Số dư</th>
+                <th>Tiền tệ</th>
+                <th>Trạng thái</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="accountsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{layout :: footer}"></div>
+  <div th:replace="~{layout :: scripts}"></div>
+
+  <script th:inline="javascript">
+    (function() {
+      const API_BASE = /*[[@{/api/v1}]]*/ '/api/v1';
+      const id = /*[[${id}]]*/ 0;
+      const fmt = (n) => n ? Number(n).toLocaleString('vi-VN', {minimumFractionDigits: 2}) : '0';
+
+      Promise.all([
+        fetch(API_BASE + '/users/' + id).then(r => r.json()),
+        fetch(API_BASE + '/accounts/user/' + id).then(r => r.json())
+      ]).then(([userRes, accountsRes]) => {
+        document.getElementById('loading').style.display = 'none';
+        const content = document.getElementById('content');
+        if (userRes.success && userRes.data) {
+          const u = userRes.data;
+          document.getElementById('breadcrumb').textContent = u.fullName || u.email;
+          document.getElementById('userInfo').innerHTML = `
+            <dt class="col-sm-2">Email</dt><dd class="col-sm-10">${u.email || ''}</dd>
+            <dt class="col-sm-2">Họ tên</dt><dd class="col-sm-10">${u.fullName || ''}</dd>
+            <dt class="col-sm-2">Số điện thoại</dt><dd class="col-sm-10">${u.phone || ''}</dd>
+            <dt class="col-sm-2">Trạng thái</dt><dd class="col-sm-10">${u.status || ''}</dd>
+          `;
+        }
+        if (accountsRes.success && accountsRes.data) {
+          accountsRes.data.forEach(acc => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${acc.accountNumber || ''}</td>
+              <td>${acc.accountType || ''}</td>
+              <td>${fmt(acc.balance)}</td>
+              <td>${acc.currency || ''}</td>
+              <td>${acc.status || ''}</td>
+              <td><a href="/pages/accounts/${acc.id}" class="btn btn-sm btn-outline-primary">Chi tiết</a></td>
+            `;
+            document.getElementById('accountsBody').appendChild(tr);
+          });
+        }
+        content.style.display = 'block';
+      }).catch(err => {
+        document.getElementById('loading').textContent = 'Lỗi: ' + err.message;
+      });
+    })();
+  </script>
+</body>
+</html>

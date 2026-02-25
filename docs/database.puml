@@ -1,0 +1,62 @@
+@startuml mini_banking_system_db
+
+' ============================================================
+' MINI BANKING SYSTEM - DATABASE ERD (Phase 1 - Basic)
+' ============================================================
+' Author: Mini Banking System Project
+' Description: Entity Relationship Diagram for learning Java Core + Spring Boot
+' ============================================================
+
+skinparam linetype ortho
+skinparam backgroundColor #FEFEFE
+skinparam roundcorner 5
+
+' ============ USERS TABLE ============
+' Lưu thông tin người dùng hệ thống (khách hàng)
+entity "users" as users {
+  * id : BIGINT <<PK>>
+  --
+  email : VARCHAR(255) <<unique>>
+  password_hash : VARCHAR(255)
+  full_name : VARCHAR(100)
+  phone : VARCHAR(20)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+' ============ ACCOUNTS TABLE ============
+' Lưu thông tin tài khoản ngân hàng của mỗi user
+entity "accounts" as accounts {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  account_number : VARCHAR(20) <<unique>>
+  account_type : VARCHAR(50)
+  balance : DECIMAL(18,2)
+  currency : VARCHAR(3)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+' ============ TRANSACTIONS TABLE ============
+' Lưu lịch sử giao dịch (chuyển, rút, nạp tiền)
+entity "transactions" as transactions {
+  * id : BIGINT <<PK>>
+  --
+  from_account_id : BIGINT <<FK>>
+  to_account_id : BIGINT <<FK>>
+  amount : DECIMAL(18,2)
+  type : VARCHAR(50)
+  description : VARCHAR(255)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+' ============ RELATIONSHIPS ============
+users ||--o{ accounts : "1 user có nhiều tài khoản"
+accounts ||--o{ transactions : "tài khoản nguồn (chuyển đi)"
+accounts ||--o{ transactions : "tài khoản đích (nhận vào)"
+
+@enduml
